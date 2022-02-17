@@ -1,91 +1,32 @@
-%flight(Number,Origin,Dest,Day,DepartTime,ArrivalTime,Cost)
-flight(a1,london,dublin).
-flight(b2,london,chicago).
-flight(c3,rome,london).
-flight(d4,rome,paris).
-flight(e5,paris,dublin).
-flight(f6,berlin,moscow).
-flight(a7,paris,amsterdam).
-flight(b8,berlin,dublin).
-flight(c9,london,newyork).
-flight(d10,dublin,newyork).
-flight(e11,dublin,cork).
-flight(f12,dublin,rome).
-flight(g13,dublin,chicago).
-flight(a14,amsterdam,hongkong).
-flight(b15,london,hongkong).
-flight(c16,dublin,amsterdam).
-
-% flightDay(Number,[DaysFly])
-flightDay(a1,[mon]).
-flightDay(b2,[thu]).
-flightDay(c3,[mon]).
-flightDay(d4,[mon]).
-flightDay(e5,[mon]).
-flightDay(f6,[mon]).
-flightDay(a7,[mon]).
-flightDay(b8,[mon]).
-flightDay(c9,[mon]).
-flightDay(d10,[mon]).
-flightDay(e11,[mon]).
-flightDay(f12,[mon]).
-flightDay(g13,[mon]).
-flightDay(a14,[mon]).
-flightDay(b15,[mon]).
-flightDay(c16,[mon]).
-
-% flightTime(Number,h_mDepart,h_mArrival)
-flightTime(a1,h_m(12,40),h_m(15,00)).
-flightTime(b2,h_m(12,40),h_m(15,00)).
-flightTime(c3,h_m(12,40),h_m(15,00)).
-flightTime(d4,h_m(12,40),h_m(15,00)).
-flightTime(e5,h_m(12,40),h_m(15,00)).
-flightTime(f6,h_m(12,40),h_m(15,00)).
-flightTime(a7,h_m(12,40),h_m(15,00)).
-flightTime(b8,h_m(12,40),h_m(15,00)).
-flightTime(c9,h_m(12,40),h_m(15,00)).
-flightTime(d10,h_m(12,40),h_m(15,00)).
-flightTime(e11,h_m(12,40),h_m(15,00)).
-flightTime(f12,h_m(12,40),h_m(15,00)).
-flightTime(g13,h_m(12,40),h_m(15,00)).
-flightTime(a14,h_m(12,40),h_m(15,00)).
-flightTime(b15,h_m(12,40),h_m(15,00)).
-flightTime(c16,h_m(12,40),h_m(15,00)).
-
-% flightCost(Number,Cost)
-flightCost(a1,15).
-flightCost(b2,12).
-flightCost(c3,13).
-flightCost(d4,14).
-flightCost(e5,15).
-flightCost(f6,16).
-flightCost(a7,20).
-flightCost(b8,30).
-flightCost(c9,56).
-flightCost(d10,21).
-flightCost(e11,20).
-flightCost(f12,30).
-flightCost(g13,11).
-flightCost(a14,12).
-flightCost(b15,15).
-flightCost(c16,19).
+:- dynamic flightTime/3, flightDay/2, flight/3.
+% flightCost(Number,Cost).
+% flightTime(Number,h_mDepart,h_mArrival).
+% flightDay(Number,[DaysFly]).
+% flight(Number,Origin,Dest).
 
 
-findAllFlights(From,To,Day,DepartTime,X):-
-  findall(Answer, route(From,To,Day,DepartTime,Answer),X).
+isLeftMoreThanRight(Left,Right):- Left @> Right, true, ! ; false, !.
+
+findAllFlights(From,To,Day,DepartTimeH,DepartTimeM,X):-
+  consult(flights),
+  findall(Answer, route(From,To,Day,h_m(DepartTimeH,DepartTimeM),Answer),X).
 
 route(From,To,Day,DepartTime,Answer):-
   route(From,To,Answer,[From],[],Day,DepartTime).
   
-route(From,To,Answer,_Path,FlightNumbers,CurrentDay,__DepartTime):-
+route(From,To,Answer,_Path,FlightNumbers,CurrentDay,CurrentTime):-
   flight(FlightNumber,From,To), %Существует прямой рейс
   flightDay(FlightNumber,ScheduleDays),
   member(CurrentDay,ScheduleDays),
+  flightTime(FlightNumber,ScheduleDepartTime,_),
+  isLeftMoreThanRight(ScheduleDepartTime,CurrentTime),
   reverse([FlightNumber|FlightNumbers],Answer).
   
-route(From,To,Answer,Path,FlightNumbers,CurrentDay,__DepartTime):-
+route(From,To,Answer,Path,FlightNumbers,CurrentDay,CurrentTime):-
   flight(FlightNumber, From, Transfer),
   not(member(Transfer,Path)),%Если мы еще не были в этом городе
   flightDay(FlightNumber,ScheduleDays),
   member(CurrentDay,ScheduleDays),
-  route(Transfer,To,Answer,[Transfer|Path],[FlightNumber|FlightNumbers],CurrentDay,__ScheduleArrivalTime).%Ищем путь с пересадкой от этого города
+  flightTime(FlightNumber,ScheduleDepartTime,ScheduleArriveTime),
+  isLeftMoreThanRight(ScheduleDepartTime,CurrentTime),
+  route(Transfer,To,Answer,[Transfer|Path],[FlightNumber|FlightNumbers],CurrentDay,ScheduleArriveTime).%Ищем путь с пересадкой от этого города
