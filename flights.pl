@@ -21,7 +21,7 @@ flightDay(a1,[mon]).
 flightDay(b2,[mon]).
 flightDay(c3,[mon]).
 flightDay(d4,[mon]).
-flightDay(e5,[mon]).
+flightDay(e5,[mon,tue]).
 flightDay(f6,[mon]).
 flightDay(a7,[mon]).
 flightDay(b8,[mon]).
@@ -39,8 +39,8 @@ flightDay(c16,[mon]).
 flightTime(a1,h_m(12,40),h_m(13,00)).
 flightTime(b2,h_m(12,40),h_m(15,00)).
 flightTime(c3,h_m(12,40),h_m(15,00)).
-flightTime(d4,h_m(15,30),h_m(16,40)).
-flightTime(e5,h_m(17,30),h_m(20,00)).
+flightTime(d4,h_m(15,30),h_m(0,40)).
+flightTime(e5,h_m(3,30),h_m(20,00)).
 flightTime(f6,h_m(12,40),h_m(15,00)).
 flightTime(a7,h_m(12,40),h_m(15,00)).
 flightTime(b8,h_m(12,40),h_m(15,00)).
@@ -71,3 +71,12 @@ flightCost(g13,11).
 flightCost(a14,12).
 flightCost(b15,15).
 flightCost(c16,19).
+
+%nextDay(CurrentDay,NextDay).
+nextDay(mon,tue).
+nextDay(tue,wed).
+nextDay(wed,thu).
+nextDay(thu,fri).
+nextDay(fri,sat).
+nextDay(sat,sun).
+nextDay(sun,mon).
