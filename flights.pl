@@ -80,3 +80,11 @@ nextDay(thu,fri).
 nextDay(fri,sat).
 nextDay(sat,sun).
 nextDay(sun,mon).
+
+weekDay(mon,1).
+weekDay(tue,2).
+weekDay(wed,3).
+weekDay(thu,4).
+weekDay(fri,5).
+weekDay(sat,6).
+weekDay(sun,7).
