@@ -3,6 +3,11 @@
 
 isLeftMoreThanRight(Left,Right):- Left @> Right, true, ! ; false, !.
 
+checkTransferTime(TransferTime,TransferTimeLimitL,TransferTimeLimitR):-
+  TransferTime > TransferTimeLimitL, TransferTime < TransferTimeLimitR, 
+  true;
+  false.
+
 removeIfMore(_,[],[]).
 removeIfMore(RequiredSize,[Head|Tail],Result):-
     length(Head,Count),
@@ -26,18 +31,19 @@ timeDif(RightD,h_m(RightH,RightM),LeftD,h_m(LeftH,LeftM),Result):-
   Result is (Stamp1 - Stamp2)/3600,!.
 
 start:-
-  findAllFlights(london,dublin,mon,7,30,X),
+  findAllFlights(london,dublin,mon,7,30,-1,999,3,X),
   writeln(X).
 
 
-findAllFlights(From,To,Day,DepartTimeH,DepartTimeM,X):-
+findAllFlights(From,To,Day,DepartTimeH,DepartTimeM,TransferTimeLimitL,TransferTimeLimitR,TransferCountLimit,X):-
   consult(flights),
-  findall(Answer, route(From,To,Day,h_m(DepartTimeH,DepartTimeM),Answer),X).
+  findall(Answer, route(From,To,Day,h_m(DepartTimeH,DepartTimeM),TransferTimeLimitL,TransferTimeLimitR,Answer),AllPaths),
+  removeIfMore(TransferCountLimit,AllPaths,X), !.
 
-route(From,To,DepartDay,DepartTime,Answer):-
-  route(From,To,DepartDay,DepartTime,Answer,[From],[]).
+route(From,To,DepartDay,DepartTime,TransferTimeLimitL,TransferTimeLimitR,Answer):-
+  route(From,To,DepartDay,DepartTime,TransferTimeLimitL,TransferTimeLimitR,Answer,[From],[]).
   
-route(From,To,CurrentDay,CurrentTime,Answer,_Path,FlightNumbers):-
+route(From,To,CurrentDay,CurrentTime,TransferTimeLimitL,TransferTimeLimitR,Answer,_Path,FlightNumbers):-
   flight(FlightNumber,From,To), % Существует прямой рейс
   flightDay(FlightNumber,ScheduleDays),
   member(CurrentDay,ScheduleDays), % Летает в текущий день
@@ -45,7 +51,7 @@ route(From,To,CurrentDay,CurrentTime,Answer,_Path,FlightNumbers):-
   isLeftMoreThanRight(ScheduleDepartTime,CurrentTime), % Успеваем сесть на прямой рейс
   reverse([FlightNumber|FlightNumbers],Answer).
   
-route(From,To,CurrentDay,CurrentTime,Answer,Path,FlightNumbers):-
+route(From,To,CurrentDay,CurrentTime,TransferTimeLimitL,TransferTimeLimitR,Answer,Path,FlightNumbers):-
   flight(FlightNumber, From, Transfer),
   not(member(Transfer,Path)),% Если мы еще не были в этом городе
   flightDay(FlightNumber,ScheduleDays),
@@ -53,4 +59,6 @@ route(From,To,CurrentDay,CurrentTime,Answer,Path,FlightNumbers):-
   flightTime(FlightNumber,ScheduleDepartTime,ScheduleArriveTime),
   isLeftMoreThanRight(ScheduleDepartTime,CurrentTime),% проверка успеваем ли мы на начало рейса
   changeDayIfNeed(ScheduleDepartTime,ScheduleArriveTime,CurrentDay,NewDay),% меняем день недели, если рейс ночной
-  route(Transfer,To,NewDay,ScheduleArriveTime,Answer,[Transfer|Path],[FlightNumber|FlightNumbers]).%Ищем путь с пересадкой от этого города
+  timeDif(CurrentDay,CurrentTime,NewDay,ScheduleArriveTime,TransferTime),
+  checkTransferTime(TransferTime,TransferTimeLimitL,TransferTimeLimitR),
+  route(Transfer,To,NewDay,ScheduleArriveTime,TransferTimeLimitL,TransferTimeLimitR,Answer,[Transfer|Path],[FlightNumber|FlightNumbers]).%Ищем путь с пересадкой от этого города
