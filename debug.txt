@@ -1,0 +1,19 @@
+  writeln("Transfer"),
+  maplist(write, [
+    'From : ',From,
+    'To : ',To,
+    'CurrentDay : ', CurrentDay,
+    'Answer : ' , Answer,
+    'Path : ', Path,
+    'FlightNumbers : ', FlightNumbers]),
+    writeln(""),
+
+  writeln("Direct"),
+  maplist(write, [
+    'From : ',From,
+    'To : ',To,
+    'CurrentDay : ', CurrentDay,
+    'Answer : ' , Answer,
+    'Path : ', _Path,
+    'FlightNumbers : ', FlightNumbers]),
+    writeln(""),
