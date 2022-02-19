@@ -31,12 +31,8 @@ timeDif(RightD,h_m(RightH,RightM),LeftD,h_m(LeftH,LeftM),Result):-
   Result is (Stamp1 - Stamp2)/3600,!.
 
 start:-
-  % findAllFlights(london,dublin,mon,7,30,X),
-  % writeln(X),
-  timeDif(mon,h_m(23,30),tue,h_m(05,45),X),
-  X < 7,
-  writeln("Just in time"), !; write("Too late"),!.
-  
+  findAllFlights(london,dublin,mon,7,30,X),
+  writeln(X).
 
 
 findAllFlights(From,To,Day,DepartTimeH,DepartTimeM,X):-
