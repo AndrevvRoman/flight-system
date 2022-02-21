@@ -1,6 +1,13 @@
 :- dynamic weekDay/2, nextDay/2, flightTime/3, flightDay/2, flight/3.
 :- use_module(library(date)).
 
+flightRouteCompare(>,RouteLeft,RouteRight):-
+  length(RouteLeft,LengthL),length(RouteRight,LengthR), LengthL > LengthR.
+flightRouteCompare(<,RouteLeft,RouteRight):-
+  length(RouteLeft,LengthL),length(RouteRight,LengthR), LengthL < LengthR.
+flightRouteCompare(=,RouteLeft,RouteRight):-
+  length(RouteLeft,LengthL),length(RouteRight,LengthR), LengthL = LengthR.
+
 isLeftMoreThanRight(Left,Right):- Left @> Right, true, ! ; false, !.
 
 checkTransferTime(TransferTime,TransferTimeLimitL,TransferTimeLimitR):-
@@ -31,8 +38,16 @@ timeDif(RightD,h_m(RightH,RightM),LeftD,h_m(LeftH,LeftM),Result):-
   Result is (Stamp1 - Stamp2)/3600,!.
 
 start:-
-  findAllFlights(london,dublin,mon,7,30,-1,999,1000,X),
-  writeln(X).
+  findAllFlights(
+    london,moscow, % Откуда и куда летим
+    mon, % День отправления
+    7,30, % Время отправления
+    -1,999,% Интервал кол-ва допустимых пересадок
+    1000, % Ограничение по кол-ву пересадок
+    X), 
+  writeln(X),
+  predsort(flightRouteCompare, X, Sorted),
+  writeln(Sorted), !.
 
 
 findAllFlights(From,To,
@@ -56,21 +71,6 @@ route(From,To,
 route(From,To,
       CurrentDay,
       CurrentTime,
-      TransferTimeLimitL,
-      TransferTimeLimitR,
-      Answer,
-      _Path,
-      FlightNumbers):-
-  flight(FlightNumber,From,To), 
-  flightDay(FlightNumber,ScheduleDays),
-  member(CurrentDay,ScheduleDays), % Летает в текущий день
-  flightTime(FlightNumber,ScheduleDepartTime,_),
-  isLeftMoreThanRight(ScheduleDepartTime,CurrentTime), % Успеваем сесть на прямой рейс
-  reverse([FlightNumber|FlightNumbers],Answer).
-  
-route(From,To,
-      CurrentDay,
-      CurrentTime,
       TransferTimeLimitL,TransferTimeLimitR,
       Answer,
       Path,
@@ -86,3 +86,18 @@ route(From,To,
   timeDif(CurrentDay,CurrentTime,NewDay,ScheduleArriveTime,TransferTime),
   checkTransferTime(TransferTime,TransferTimeLimitL,TransferTimeLimitR),
   route(Transfer,To,NewDay,ScheduleArriveTime,TransferTimeLimitL,TransferTimeLimitR,Answer,[Transfer|Path],[FlightNumber|FlightNumbers]).%Ищем путь с пересадкой от этого города
+
+route(From,To,
+      CurrentDay,
+      CurrentTime,
+      TransferTimeLimitL,
+      TransferTimeLimitR,
+      Answer,
+      _Path,
+      FlightNumbers):-
+  flight(FlightNumber,From,To), 
+  flightDay(FlightNumber,ScheduleDays),
+  member(CurrentDay,ScheduleDays), % Летает в текущий день
+  flightTime(FlightNumber,ScheduleDepartTime,_),
+  isLeftMoreThanRight(ScheduleDepartTime,CurrentTime), % Успеваем сесть на прямой рейс
+  reverse([FlightNumber|FlightNumbers],Answer).
