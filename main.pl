@@ -31,28 +31,52 @@ timeDif(RightD,h_m(RightH,RightM),LeftD,h_m(LeftH,LeftM),Result):-
   Result is (Stamp1 - Stamp2)/3600,!.
 
 start:-
-  findAllFlights(london,dublin,mon,7,30,-1,999,3,X),
+  findAllFlights(london,dublin,mon,7,30,-1,999,1000,X),
   writeln(X).
 
 
-findAllFlights(From,To,Day,DepartTimeH,DepartTimeM,TransferTimeLimitL,TransferTimeLimitR,TransferCountLimit,X):-
+findAllFlights(From,To,
+               Day,
+               DepartTimeH,DepartTimeM,
+               TransferTimeLimitL,TransferTimeLimitR,
+               TransferCountLimit,
+               X):-
   consult(flights),
   findall(Answer, route(From,To,Day,h_m(DepartTimeH,DepartTimeM),TransferTimeLimitL,TransferTimeLimitR,Answer),AllPaths),
   removeIfMore(TransferCountLimit,AllPaths,X), !.
 
-route(From,To,DepartDay,DepartTime,TransferTimeLimitL,TransferTimeLimitR,Answer):-
+route(From,To,
+      DepartDay,
+      DepartTime,
+      TransferTimeLimitL,
+      TransferTimeLimitR,
+      Answer):-
   route(From,To,DepartDay,DepartTime,TransferTimeLimitL,TransferTimeLimitR,Answer,[From],[]).
   
-route(From,To,CurrentDay,CurrentTime,TransferTimeLimitL,TransferTimeLimitR,Answer,_Path,FlightNumbers):-
-  flight(FlightNumber,From,To), % Существует прямой рейс
+route(From,To,
+      CurrentDay,
+      CurrentTime,
+      TransferTimeLimitL,
+      TransferTimeLimitR,
+      Answer,
+      _Path,
+      FlightNumbers):-
+  flight(FlightNumber,From,To), 
   flightDay(FlightNumber,ScheduleDays),
   member(CurrentDay,ScheduleDays), % Летает в текущий день
   flightTime(FlightNumber,ScheduleDepartTime,_),
   isLeftMoreThanRight(ScheduleDepartTime,CurrentTime), % Успеваем сесть на прямой рейс
   reverse([FlightNumber|FlightNumbers],Answer).
   
-route(From,To,CurrentDay,CurrentTime,TransferTimeLimitL,TransferTimeLimitR,Answer,Path,FlightNumbers):-
+route(From,To,
+      CurrentDay,
+      CurrentTime,
+      TransferTimeLimitL,TransferTimeLimitR,
+      Answer,
+      Path,
+      FlightNumbers):-
   flight(FlightNumber, From, Transfer),
+  Transfer \= To, % Для прямых есть другой предикат 
   not(member(Transfer,Path)),% Если мы еще не были в этом городе
   flightDay(FlightNumber,ScheduleDays),
   member(CurrentDay,ScheduleDays), % Летает в текущий день
