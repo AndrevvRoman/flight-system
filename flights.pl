@@ -15,6 +15,10 @@ flight(g13,dublin,chicago).
 flight(a14,amsterdam,hongkong).
 flight(b15,london,hongkong).
 flight(c16,dublin,amsterdam).
+flight(c17,dublin,berlin).
+flight(c18,london,moscow).
+flight(c19,dublin,moscow).
+
 
 % flightDay(Number,[DaysFly])
 flightDay(a1,[mon]).
@@ -33,6 +37,11 @@ flightDay(g13,[mon]).
 flightDay(a14,[mon]).
 flightDay(b15,[mon]).
 flightDay(c16,[mon]).
+flightDay(c17,[mon]).
+flightDay(c18,[mon]).
+flightDay(c19,[mon]).
+
+
 
 % X = [[a1], [a1, f12, d4, e5]].
 % flightTime(Number,h_mDepart,h_mArrival)
@@ -41,7 +50,7 @@ flightTime(b2,h_m(12,40),h_m(15,00)).
 flightTime(c3,h_m(12,40),h_m(15,00)).
 flightTime(d4,h_m(15,30),h_m(0,40)).
 flightTime(e5,h_m(3,30),h_m(20,00)).
-flightTime(f6,h_m(12,40),h_m(15,00)).
+flightTime(f6,h_m(20,40),h_m(23,00)).
 flightTime(a7,h_m(12,40),h_m(15,00)).
 flightTime(b8,h_m(12,40),h_m(15,00)).
 flightTime(c9,h_m(12,40),h_m(15,00)).
@@ -53,6 +62,10 @@ flightTime(g13,h_m(12,40),h_m(15,00)).
 flightTime(a14,h_m(12,40),h_m(15,00)).
 flightTime(b15,h_m(12,40),h_m(15,00)).
 flightTime(c16,h_m(12,40),h_m(15,00)).
+flightTime(c17,h_m(15,40),h_m(17,00)).
+flightTime(c18,h_m(15,40),h_m(17,00)).
+flightTime(c19,h_m(15,40),h_m(17,00)).
+
 
 % flightCost(Number,Cost)
 flightCost(a1,15).
@@ -71,6 +84,9 @@ flightCost(g13,11).
 flightCost(a14,12).
 flightCost(b15,15).
 flightCost(c16,19).
+flightCost(c17,19).
+flightCost(c18,19).
+flightCost(c19,19).
 
 %nextDay(CurrentDay,NextDay).
 nextDay(mon,tue).
