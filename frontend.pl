@@ -33,3 +33,29 @@ printSingleRouteInfo([],CurrentCost,TotalCost):-
 printTime(TimeH,TimeM):-
     write(TimeH), write(":"), 
     TimeM = 0, writeln("00"), true, !; writeln(TimeM).
+
+printProgrammInfo:-
+    writeln("-------------------"),
+    writeln("Flight route system"),
+    writeln("-------------------"),
+    writeln("Helps you to find all route from A to B by plane"),
+    nl,
+    nl.
+
+readSortType(SortType):-
+    writeln("Which routes are you looking for ?"),
+    writeln("1) Less count of transfers as possble"),
+    writeln("2) Less prices as possble"),
+    read(SortType).
+
+readQueryInfo(Origin,Dest,WeekDayDepart,DepartTimeH,DepartTimeM):-
+    writeln("Type origin city. Type '.' in the end of the line to continue.."),
+    read(Origin),
+    writeln("Type desination city. Type '.' in the end of the line to continue.."),
+    read(Dest),
+    writeln("Type department weekday (mon,fri..). Type '.' in the end of the line to continue.."),
+    read(WeekDayDepart),
+    writeln("Type depart hour (24h format). Type '.' in the end of the line to continue.."),
+    read(DepartTimeH),
+    writeln("Type depart minute (24h format). Type '.' in the end of the line to continue.."),
+    read(DepartTimeM).
