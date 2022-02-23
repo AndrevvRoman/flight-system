@@ -12,9 +12,17 @@ Clone repo
 
 ```bash
 git clone https://github.com/AndrevvRoman/flight-system.git
+cd flight-system
 ```
 
-Run `swipl.exe` in the project directory and execute the following command and following outputted suggestions
+Run `swipl.exe` in the `app` directory of the project. 
+
+```bash
+cd app
+swipl.exe
+```
+
+Execute the following command and following outputted suggestions
 
 ```prolog
 [main]
