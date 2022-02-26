@@ -47,8 +47,8 @@ printProgrammInfo:-
 
 readSortType(SortType):-
     writeln("Which routes are you looking for ?"),
-    writeln("1) Less count of transfers as possble"),
-    writeln("2) Less prices as possble"),
+    writeln("1) Less count of transfers as possble(sort by transfers count of route)"),
+    writeln("2) Less prices as possble(sort by total cost of route)"),
     read(SortType).
 
 readQueryInfo(
