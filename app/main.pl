@@ -1,11 +1,12 @@
 :- dynamic 
+flightRouteCompareByCost/3, 
 readSortType/1, 
-readQueryInfo/5, 
+readQueryInfo/8, 
 printProgrammInfo/0, 
 printRoutesInfo/1, 
 removeIfMore/3,
 route/7, 
-flightRouteCompare/3.
+flightRouteCompareByCount/3.
 
 start:-
   consult(frontend),
@@ -14,15 +15,28 @@ start:-
   setSortType(SortType).
 
 setSortType(1):-
-  readQueryInfo(Origin,Dest,WeekDayDepart,DepartTimeH,DepartTimeM),
+  readQueryInfo(Origin,Dest,WeekDayDepart,DepartTimeH,DepartTimeM,LTimeLimit,RTimeLimit,TransferCountLimit),
   findAllFlights(
     Origin,Dest, % Откуда и куда летим
     WeekDayDepart, % День отправления
     DepartTimeH,DepartTimeM, % Время отправления
-    -1,999,% Интервал допустимого кол-ва часов между пересадками
-    2, % Ограничение по кол-ву пересадок
+    LTimeLimit,RTimeLimit,% Интервал допустимого кол-ва часов между пересадками
+    TransferCountLimit, % Ограничение по кол-ву пересадок
     X),
-    predsort(flightRouteCompare, X, Sorted),
+    predsort(flightRouteCompareByCount, X, Sorted),
+    consult(frontend),
+    printRoutesInfo(Sorted), !.
+
+setSortType(2):-
+  readQueryInfo(Origin,Dest,WeekDayDepart,DepartTimeH,DepartTimeM,LTimeLimit,RTimeLimit,TransferCountLimit),
+  findAllFlights(
+    Origin,Dest, % Откуда и куда летим
+    WeekDayDepart, % День отправления
+    DepartTimeH,DepartTimeM, % Время отправления
+    LTimeLimit,RTimeLimit,% Интервал допустимого кол-ва часов между пересадками
+    TransferCountLimit, % Ограничение по кол-ву пересадок
+    X),
+    predsort(flightRouteCompareByCost, X, Sorted),
     consult(frontend),
     printRoutesInfo(Sorted), !.
 

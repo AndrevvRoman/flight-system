@@ -1,11 +1,21 @@
 :- use_module(library(date)).
+:- dynamic flightCost/2, 
+weekDay/2, 
+nextDay/2.
 
-flightRouteCompare(>,RouteLeft,RouteRight):-
+flightRouteCompareByCount(>,RouteLeft,RouteRight):-
     length(RouteLeft,LengthL),length(RouteRight,LengthR), LengthL > LengthR.
-  flightRouteCompare(<,RouteLeft,RouteRight):-
+  flightRouteCompareByCount(<,RouteLeft,RouteRight):-
     length(RouteLeft,LengthL),length(RouteRight,LengthR), LengthL < LengthR.
-  flightRouteCompare(=,RouteLeft,RouteRight):-
+  flightRouteCompareByCount(=,RouteLeft,RouteRight):-
     length(RouteLeft,LengthL),length(RouteRight,LengthR), LengthL = LengthR.
+
+flightRouteCompareByCost(>,RouteLeft,RouteRight):-
+  routeCost(RouteLeft,CostL),routeCost(RouteRight,CostR), CostL > CostR.
+flightRouteCompareByCost(<,RouteLeft,RouteRight):-
+  routeCost(RouteLeft,CostL),routeCost(RouteRight,CostR), CostL < CostR.
+flightRouteCompareByCost(=,RouteLeft,RouteRight):-
+  routeCost(RouteLeft,CostL),routeCost(RouteRight,CostR), CostL = CostR.
   
 isLeftMoreThanRight(Left,Right):- Left @> Right, true, ! ; false, !.
 
@@ -35,3 +45,15 @@ weekDay(LeftD,LeftDInt),
 date_time_stamp(date(1970,01,LeftDInt,LeftH,LeftM,0,0,-,-), Stamp1),
 date_time_stamp(date(1970,01,RightDInt,RightH,RightM,0,0,-,-), Stamp2),
 Result is (Stamp1 - Stamp2)/3600,!.
+
+routeCost(Route, Cost):-
+  consult(flights),
+  routeCost(Route,0,Cost), !.
+
+routeCost([FlightNumber|Tail], CurrentCost, TotalCost):-
+  flightCost(FlightNumber,Cost),
+  CurrentCostInc is CurrentCost + Cost,
+  routeCost(Tail,CurrentCostInc,TotalCost).
+
+routeCost([], CurrentCost, TotalCost):-
+  TotalCost is CurrentCost.
