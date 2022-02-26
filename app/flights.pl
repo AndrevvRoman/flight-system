@@ -85,7 +85,7 @@ flightCost(a14,12).
 flightCost(b15,15).
 flightCost(c16,19).
 flightCost(c17,19).
-flightCost(c18,19).
+flightCost(c18,45).
 flightCost(c19,19).
 
 %nextDay(CurrentDay,NextDay).
