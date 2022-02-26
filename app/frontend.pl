@@ -1,4 +1,7 @@
-:- dynamic flightCost/2, flightTime/3, flight/3.
+:- dynamic 
+flightCost/2, 
+flightTime/3, 
+flight/3.
 
 printRoutesInfo(Route):-
     printRoutesInfo(Route, 1).
@@ -48,7 +51,14 @@ readSortType(SortType):-
     writeln("2) Less prices as possble"),
     read(SortType).
 
-readQueryInfo(Origin,Dest,WeekDayDepart,DepartTimeH,DepartTimeM):-
+readQueryInfo(
+    Origin,
+    Dest,
+    WeekDayDepart,
+    DepartTimeH,DepartTimeM,
+    LeftTimeBetweenTransfers,
+    RightTimeBetweenTransfers,
+    TransfersCountLimit):-
     writeln("Type origin city. Type '.' in the end of the line to continue.."),
     read(Origin),
     writeln("Type desination city. Type '.' in the end of the line to continue.."),
@@ -58,4 +68,10 @@ readQueryInfo(Origin,Dest,WeekDayDepart,DepartTimeH,DepartTimeM):-
     writeln("Type depart hour (24h format). Type '.' in the end of the line to continue.."),
     read(DepartTimeH),
     writeln("Type depart minute (24h format). Type '.' in the end of the line to continue.."),
-    read(DepartTimeM).
+    read(DepartTimeM),
+    writeln("Type left interval between transfers in hours(-1 for no limit). Type '.' in the end of the line to continue.."),
+    read(LeftTimeBetweenTransfers),
+    writeln("Type right interval between transfers in hours(999 for no limit). Type '.' in the end of the line to continue.."),
+    read(RightTimeBetweenTransfers),
+    writeln("Type transfers count limit(999 for no limit). Type '.' in the end of the line to continue.."),
+    read(TransfersCountLimit).
