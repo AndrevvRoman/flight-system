@@ -47,8 +47,8 @@ printProgrammInfo:-
 
 readSortType(SortType):-
     writeln("Which routes are you looking for ?"),
-    writeln("1) Less count of transfers as possble(sort by transfers count of route)"),
-    writeln("2) Less prices as possble(sort by total cost of route)"),
+    writeln("1) Less count of transfers as possible(sort by transfers count of route)"),
+    writeln("2) Less prices as possible(sort by total cost of route)"),
     read(SortType).
 
 readQueryInfo(
@@ -60,9 +60,12 @@ readQueryInfo(
     RightTimeBetweenTransfers,
     TransfersCountLimit):-
     writeln("Type origin city. Type '.' in the end of the line to continue.."),
+    printAllCityes(),
     read(Origin),
-    writeln("Type desination city. Type '.' in the end of the line to continue.."),
+    writeln("Type destination city. Type '.' in the end of the line to continue.."),
+    printAllCityes(),
     read(Dest),
+    Dest \= Origin,
     writeln("Type department weekday (mon,fri..). Type '.' in the end of the line to continue.."),
     read(WeekDayDepart),
     writeln("Type depart hour (24h format). Type '.' in the end of the line to continue.."),
@@ -74,4 +77,20 @@ readQueryInfo(
     writeln("Type right interval between transfers in hours(999 for no limit). Type '.' in the end of the line to continue.."),
     read(RightTimeBetweenTransfers),
     writeln("Type transfers count limit(999 for no limit). Type '.' in the end of the line to continue.."),
-    read(TransfersCountLimit).
+    read(TransfersCountLimit)
+    ;
+    writeln("Input error"), halt.
+
+printAllCityes():-
+    writeln("Available cities:"),
+    writeln("london"),
+    writeln("rome"),
+    writeln("paris"),
+    writeln("berlin"),
+    writeln("dublin"),
+    writeln("amsterdam"),
+    writeln("chicago"),
+    writeln("moscow"),
+    writeln("newyork"),
+    writeln("cork"),
+    writeln("hongkong").
